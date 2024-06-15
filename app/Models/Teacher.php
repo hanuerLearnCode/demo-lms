@@ -9,24 +9,10 @@ class Teacher extends Model
 {
     use HasFactory;
 
-    protected $table = 'users';
+    protected $table = 'teachers';
 
-    protected float $salary;
-
-    /**
-     * @return float
-     */
-    public function getSalary(): float
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->salary;
+        return $this->belongsTo(User::class);
     }
-
-    /**
-     * @param float $salary
-     */
-    public function setSalary(float $salary): void
-    {
-        $this->salary = $salary;
-    }
-
 }
