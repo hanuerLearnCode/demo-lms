@@ -16,9 +16,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
-        $this->app->bind(UserRepository::class, UserService::class);
-        $this->app->bind(UserRepository::class, StudentService::class);
+//        $this->app->bind(UserRepository::class, UserService::class);
     }
 
     /**

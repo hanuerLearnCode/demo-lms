@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Student;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,18 +16,3 @@ use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/student', function () {
-    return response()->json(Student::all());
-});
-
-Route::get('/student/create', function () {
-
-    $student = User::find(6);
-    return response()->json($student);
-});
-
-
-Route::get('/users', [\App\Http\Controllers\UserController::class, 'listUsers']);
-Route::get('/students', [\App\Http\Controllers\UserController::class, 'listStudents']);
-Route::get('/users/{id}', [\App\Http\Controllers\UserController::class, 'findById']);
