@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'users_roles', 'user_id', 'role_id');
     }
 
+    public function userRole()
+    {
+        return $this->hasOne(UserRole::class, 'user_id');
+    }
+
     public function student()
     {
         return $this->hasOne(Student::class, 'user_id');

@@ -11,14 +11,12 @@ class UserService implements UserRepositoryInterface
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
-        return User::all();
+        return User::with('userRole')->get();
     }
 
     public function getById(int $id)
     {
-        // TODO: Implement getById() method.
-        return User::find($id);
+        return User::with('role')->find($id);
     }
 
     public function create(array $data = [])

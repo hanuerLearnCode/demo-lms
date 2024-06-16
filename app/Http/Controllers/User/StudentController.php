@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\StudentResource;
 use App\Service\User\StudentService;
 
 class StudentController extends Controller
@@ -17,7 +18,7 @@ class StudentController extends Controller
 
     public function getAll()
     {
-        return $this->studentService->getAll();
+        return StudentResource::collection($this->studentService->getAll());
     }
 
     public function getById(int $id)
