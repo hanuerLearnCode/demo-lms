@@ -61,4 +61,10 @@ class User extends Authenticatable implements UserInterface
     {
         return $this->hasOne(Student::class, 'user_id');
     }
+
+    // de-unique email if user has been deleted
+    public function scopeActiveUniqueEmail($query)
+    {
+        return $query->where('deleted_at', null);
+    }
 }
