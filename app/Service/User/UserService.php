@@ -2,9 +2,9 @@
 
 namespace App\Service\User;
 
+use App\Contract\Users\UserInterface;
 use App\Contract\Users\UserRepositoryInterface;
 use App\Models\User;
-use Illuminate\Http\Client\Request;
 
 class UserService implements UserRepositoryInterface
 {
@@ -24,15 +24,13 @@ class UserService implements UserRepositoryInterface
         return User::create($data);
     }
 
-    public function update(User $user, array $data = [])
+    public function update(UserInterface $user, array $data = [])
     {
-        // TODO: Implement update() method.
         return $user->update($data);
     }
 
-    public function delete(User $user)
+    public function delete(UserInterface $user)
     {
-        // TODO: Implement delete() method.
         return $user->delete();
     }
 }

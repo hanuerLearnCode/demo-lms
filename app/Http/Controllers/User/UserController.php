@@ -37,13 +37,7 @@ class UserController extends Controller
     {
         $data = $request->all();
         // create new user
-        $user = $this->userService->create($data);
-        // create his/her role
-        $userRole = [
-            'user_id' => $user->id,
-            'role_id' => Role::STUDENT_ROLE_ID,
-        ];
-        $this->userRoleService->create($userRole);
+        $this->userService->create($data);
         return response()->json("New user created!");
     }
 
@@ -53,27 +47,14 @@ class UserController extends Controller
         // update user infor
         $user = $this->userService->getById($id);
         $this->userService->update($user, $data);
-        // update his/her role (if change)
-        $user_role_id = $user->userRole->id;
-        $userRole = $this->userRoleService->getById($user_role_id);
-        $userRoleData = [
-            'user_id' => $user->id,
-            'role_id' => Role::STUDENT_ROLE_ID, // this could be something like $request->user_role
-        ];
-        $this->userRoleService->update($userRole, $userRoleData);
-
         return response()->json("User updated!");
     }
 
     public function delete(int $id)
     {
         $user = $this->userService->getById($id);
-        $user_role_id = $user->userRole->id;
-        $userRole = $this->userRoleService->getById($user_role_id);
         // delete user
         $this->userService->delete($user);
-        // delete his/her role
-        $this->userRoleService->delete($userRole);
         return response()->json("User deleted!");
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Contract\Users;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 
 interface UserRepositoryInterface
 {
@@ -14,7 +12,7 @@ interface UserRepositoryInterface
 
     public function create(array $data = []);
 
-    public function update(User $user, array $data = []);
+    public function update(UserInterface $user, array $data = []);
 
-    public function delete(User $user);
+    public function delete(UserInterface $user);
 }

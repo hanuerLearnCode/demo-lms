@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
+use App\Contract\Users\UserInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Student extends Model implements UserInterface
 {
     use HasFactory;
 
     protected $table = 'students';
+    protected $fillable = [
+        'user_id',
+        'office_class_id',
+        'faculty_id',
+    ];
 
     public function user()
     {
