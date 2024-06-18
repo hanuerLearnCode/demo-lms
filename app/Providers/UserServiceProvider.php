@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Models\User;
 use App\Service\User\StudentService;
 use App\Service\User\UserService;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
@@ -29,5 +30,8 @@ class UserServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+
+        // turn off data wrapping
+        JsonResource::withoutWrapping();
     }
 }

@@ -34,3 +34,10 @@ Route::prefix('/students')->group(function () {
     Route::delete('/{id}', [\App\Http\Controllers\User\StudentController::class, 'delete']);
 });
 
+Route::prefix('/teachers')->group(function () {
+    Route::get('/', [\App\Http\Controllers\User\TeacherController::class, 'getAll']);
+    Route::get('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'getById']);
+    Route::post('/', [\App\Http\Controllers\User\TeacherController::class, 'create']);
+    Route::put('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'delete']);
+});
