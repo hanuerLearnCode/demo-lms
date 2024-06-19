@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\User;
 use App\Http\Resources\User\TeacherResource;
 use App\Models\Role;
+use App\Models\User;
 use App\Service\User\TeacherService;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
@@ -50,6 +50,10 @@ class TeacherController extends Controller
             // create new user
             $user = $this->userService->create($data);
 
+            // if user infor is invalid
+            if (!($user instanceof User))
+                return json_decode($user);
+
             // save to students table
             $teacher_infor = [
                 'user_id' => $user->id,
@@ -80,13 +84,20 @@ class TeacherController extends Controller
         $data = $request->all();
         try {
             $teacher = $this->teacherService->getById($id);
+            if (!$teacher) return response()->json("Couldn't find the target teacher!");
             $user = $this->userService->getById($teacher->user->id);
+            if (!$user) return response()->json("Couldn't find the target user!");
 
 
             // update user infor
-            $this->userService->update($user, $data);
+            $update = $this->userService->update($user, $data);
 
-            // update student infor
+            // if new infor is not valid
+            if ($update !== true) {
+                return $update;
+            }
+
+            // update teacher infor
             $this->teacherService->update($teacher, $data);
 
 
@@ -101,7 +112,10 @@ class TeacherController extends Controller
     public function delete(int $id)
     {
         $teacher = $this->teacherService->getById($id);
+        if (!$teacher) return response()->json("Couldn't find the target teacher!");
+
         $user = $this->userService->getById($teacher->user->id);
+        if (!$user) return response()->json("Couldn't find the target user!");
 
         try {
             // delete from students table
@@ -109,6 +123,9 @@ class TeacherController extends Controller
 
             // delete from users_roles table
             $this->userRoleService->delete($user->userRole);
+
+            // delete from users table
+            $this->userService->delete($user);
 
             return response()->json("Teacher deleted!");
         } catch (\Exception $exception) {
