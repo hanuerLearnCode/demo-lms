@@ -41,3 +41,6 @@ Route::prefix('/teachers')->group(function () {
     Route::put('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'update']);
     Route::delete('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'delete']);
 });
+
+Route::resource('office_classes', \App\Http\Controllers\OfficeClassController::class);
+Route::resource('faculties', \App\Http\Controllers\FacultyController::class);
