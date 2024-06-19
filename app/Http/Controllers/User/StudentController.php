@@ -50,6 +50,10 @@ class StudentController extends Controller
             // create new user
             $user = $this->userService->create($data);
 
+            // if user infor is invalid
+            if (!($user instanceof User))
+                return json_decode($user);
+
             // save to students table
             $student_infor = [
                 'user_id' => $user->id,
@@ -66,7 +70,7 @@ class StudentController extends Controller
             $this->userRoleService->create($role_data);
 
             // return msg
-            return response()->json('New Student created');
+            return response()->json('New Student created!');
         } catch (\Exception $exception) {
             logger($exception->getMessage());
             return response()->json('Something went wrong, couldn\'t create student!');
@@ -79,17 +83,17 @@ class StudentController extends Controller
         try {
 
             $student = $this->studentService->getById($id);
-
             if (!$student) return response()->json('Can\'t find the target student!', 404);
 
             $user = $this->userService->getById($student->user->id);
+            if (!$user) return response()->json("Couldn't find the target user!");
 
             // update user infor
             $update = $this->userService->update($user, $data);
 
             // if new infor is not valid
-            if (!$update) {
-                return json_decode($update);
+            if ($update !== true) {
+                return $update;
             }
 
 
@@ -123,6 +127,9 @@ class StudentController extends Controller
 
             // delete from users_roles table
             $this->userRoleService->delete($user->userRole);
+
+            // delete from users table
+            $this->userService->delete($user);
 
             return response()->json("Student deleted!");
         } catch (\Exception $exception) {
