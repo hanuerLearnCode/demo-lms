@@ -15,7 +15,6 @@ class User extends Authenticatable implements UserInterface
     use HasApiTokens, HasFactory, Notifiable;
     use SoftDeletes;
 
-    protected const STUDENT_ROLE_ID = 2;
 
     /**
      * The attributes that are mass assignable.
@@ -63,8 +62,8 @@ class User extends Authenticatable implements UserInterface
     }
 
     // de-unique email if user has been deleted
-    public function scopeActiveUniqueEmail($query)
+    public function scopeActive($query)
     {
-        return $query->where('deleted_at', null);
+        return $query->whereNull('deleted_at');
     }
 }

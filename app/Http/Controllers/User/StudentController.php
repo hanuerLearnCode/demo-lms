@@ -9,6 +9,7 @@ use App\Service\User\StudentService;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -31,60 +32,87 @@ class StudentController extends Controller
 
     public function getById(int $id)
     {
-        return new StudentResource($this->studentService->getById($id));
+        $student = $this->studentService->getById($id);
+
+        if ($student)
+            return new StudentResource($student);
+
+        return response()->json("Couldn't find the target student!", 404);
     }
 
     public function create(Request $request)
     {
         $data = $request->all();
 
-        // create new user
-        $user = $this->userService->create($data);
+        try {
 
-        // save to students table
-        $student_infor = [
-            'user_id' => $user->id,
-            'office_class_id' => $data['office_class_id'],
-            'faculty_id' => $data['faculty_id'],
-        ];
-        $student = $this->studentService->create($student_infor);
-        // save to users_roles table
-        $role_data = [
-            'user_id' => $user->id,
-            'role_id' => Role::STUDENT_ROLE_ID,
-        ];
-        $this->userRoleService->create($role_data);
+            // create new user
+            $user = $this->userService->create($data);
 
-        // return msg
-        return response()->json('New Student created');
+            // save to students table
+            $student_infor = [
+                'user_id' => $user->id,
+                'office_class_id' => $data['office_class_id'],
+                'faculty_id' => $data['faculty_id'],
+            ];
+            $this->studentService->create($student_infor);
+            // save to users_roles table
+            $role_data = [
+                'user_id' => $user->id,
+                'role_id' => Role::STUDENT_ROLE_ID,
+            ];
+            $this->userRoleService->create($role_data);
+
+            // return msg
+            return response()->json('New Student created');
+        } catch (\Exception $exception) {
+            logger($exception->getMessage());
+            return response()->json('Something went wrong, couldn\'t create student!');
+        }
+
+
     }
 
     public function update(Request $request, int $id)
     {
         $data = $request->all();
-        $student = $this->studentService->getById($id);
-        $user = $this->userService->getById($student->user->id);
+        try {
 
-        // update user infor
-        $this->userService->update($user, $data);
+            $student = $this->studentService->getById($id);
+            $user = $this->userService->getById($student->user->id);
 
-        // update student infor
-        $this->studentService->update($student, $data);
+            // update user infor
+            $this->userService->update($user, $data);
 
-        return response()->json('Student updated!');
+            // update student infor
+            $this->studentService->update($student, $data);
+
+            return response()->json('Student updated!');
+
+        } catch (\Exception $exception) {
+            logger($exception->getMessage());
+            return response()->json('Something went wrong, couldn\'t update student!');
+        }
     }
 
     public function delete(int $id)
     {
-        $student = $this->studentService->getById($id);
-        $user = $this->userService->getById($student->user->id);
+        try {
 
-        // delete from students table
-        $this->studentService->delete($student);
+            $student = $this->studentService->getById($id);
+            $user = $this->userService->getById($student->user->id);
 
-        // delete from users_roles table
-        $this->userRoleService->delete($user->userRole);
+            // delete from students table
+            $this->studentService->delete($student);
 
-        return response()->json("Student deleted!");
+            // delete from users_roles table
+            $this->userRoleService->delete($user->userRole);
+
+            return response()->json("Student deleted!");
+        } catch (\Exception $exception) {
+            logger($exception->getMessage());
+            return response()->json('Something went wrong, couldn\'t delete student!');
+        }
+
     }
 }
