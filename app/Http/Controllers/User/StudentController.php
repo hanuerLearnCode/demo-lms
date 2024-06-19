@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\StudentResource;
 use App\Models\Role;
+use App\Models\User;
 use App\Service\User\StudentService;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
@@ -56,6 +57,7 @@ class StudentController extends Controller
                 'faculty_id' => $data['faculty_id'],
             ];
             $this->studentService->create($student_infor);
+
             // save to users_roles table
             $role_data = [
                 'user_id' => $user->id,
@@ -69,8 +71,6 @@ class StudentController extends Controller
             logger($exception->getMessage());
             return response()->json('Something went wrong, couldn\'t create student!');
         }
-
-
     }
 
     public function update(Request $request, int $id)
@@ -79,13 +79,27 @@ class StudentController extends Controller
         try {
 
             $student = $this->studentService->getById($id);
+
+            if (!$student) return response()->json('Can\'t find the target student!', 404);
+
             $user = $this->userService->getById($student->user->id);
 
             // update user infor
-            $this->userService->update($user, $data);
+            $update = $this->userService->update($user, $data);
+
+            // if new infor is not valid
+            if (!$update) {
+                return json_decode($update);
+            }
+
 
             // update student infor
-            $this->studentService->update($student, $data);
+            $updateStudentData = [
+                'office_class_id' => $data['office_class_id'],
+                'faculty_id' => $data['faculty_id'],
+            ];
+
+            $this->studentService->update($student, $updateStudentData);
 
             return response()->json('Student updated!');
 
@@ -100,6 +114,8 @@ class StudentController extends Controller
         try {
 
             $student = $this->studentService->getById($id);
+            if (!$student) return response()->json('Can\'t find the target student!', 404);
+
             $user = $this->userService->getById($student->user->id);
 
             // delete from students table

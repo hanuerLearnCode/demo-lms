@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\UserResource;
+use App\Models\User;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
 use Illuminate\Http\Request;
@@ -40,31 +41,16 @@ class UserController extends Controller
 
     public function create(Request $request)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users', 'email')
-                    ->whereNull('deleted_at') // Exclude soft-deleted users
-            ],
-            'password' => 'required|string|min:8|confirmed',
-        ];
 
-        $validated = $this->validateUserDataFromRequest($request, $rules);
-
-        // if the result is a json file
-        if (!is_array($validated))
-            return $validated;
-
-        // if it is an array
-        $data = $validated;
-
-        $data['password'] = Hash::make($data['password']);
+        $data = $request->all();
 
         try {
             // create new user
-            $this->userService->create($data);
+            $user = $this->userService->create($data);
+
+            // if
+            if (!($user instanceof User))
+                return json_decode($user);
 
             // response
             return response()->json("New user created!");
@@ -77,37 +63,25 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users', 'email')
-                    ->whereNull('deleted_at') // Exclude soft-deleted users
-            ],
-        ];
-
-        $validated = $this->validateUserDataFromRequest($request, $rules);
-
-        // if the result is a json file
-        if (!is_array($validated))
-            return $validated;
-
-        // if it is an array
-        $data = $validated;
-
-        if (isset($data['password'])) $data['password'] = Hash::make($data['password']);
+        $data = $request->all();
 
         try {
-            // update user infor
+
             $user = $this->userService->getById($id);
 
             if (!$user)
                 return response()->json("Couldn't find the target user!");
 
-            $this->userService->update($user, $data);
+            // update user infor
+            $update = $this->userService->update($user, $data);
 
-            return response()->json("User updated!");
+            if ($update !== true) {
+                return $update;
+            } else {
+                return response()->json("User updated!");
+            }
+
+
         } catch (\Exception $exception) {
             logger($exception->getMessage());
             return response()->json("Something went wrong, couldn't update user!");
