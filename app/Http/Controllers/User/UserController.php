@@ -105,18 +105,4 @@ class UserController extends Controller
             return response()->json("Something went wrong, couldn't delete user!");
         }
     }
-
-    /**
-     * @throws \Exception
-     */
-    public function validateUserDataFromRequest(Request $request, array $rules)
-    {
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return json_encode($validator->errors()); // return a json if fail
-        }
-
-        return $validator->validated(); // Return validated data if successful
-    }
 }

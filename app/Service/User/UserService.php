@@ -43,7 +43,6 @@ class UserService implements UserRepositoryInterface
     public function update(UserInterface $user, array $data = [])
     {
 
-        // if user wants to change email
         // validate email
         $validator = Validator::make($data, [
             'name' => '',
@@ -59,6 +58,7 @@ class UserService implements UserRepositoryInterface
 
         // if user want to change password
         if (isset($password)) $data['password'] = Hash::make($password);
+
         return $user->update($data);
     }
 
