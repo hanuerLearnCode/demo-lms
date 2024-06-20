@@ -15,7 +15,8 @@ class UserService implements UserRepositoryInterface
 
     public function getAll()
     {
-        return User::with('userRole')->get();
+        // remove get() to use paginate()
+        return User::with('userRole');
     }
 
     public function getById(int $id)
@@ -36,6 +37,8 @@ class UserService implements UserRepositoryInterface
         }
 
         $data = $validator->validated();
+
+        $data['password'] = Hash::make($data['password']);
 
         return User::create($data);
     }

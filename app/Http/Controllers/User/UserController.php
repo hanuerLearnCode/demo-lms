@@ -24,7 +24,10 @@ class UserController extends Controller
 
     public function index()
     {
-        return UserResource::collection($this->userService->getAll());
+        $users = UserResource::collection($this->userService->getAll()->paginate(10));
+        return view('users.index')->with([
+            'users' => $users,
+        ]);
     }
 
     public function show(int $id)
@@ -37,12 +40,17 @@ class UserController extends Controller
         return response()->json("Couldn't find the target user!", 404);
     }
 
+    public function create()
+    {
+        return view('users.add');
+    }
+
     public function store(Request $request)
     {
 
         $data = $request->all();
 
-        $data['password'] = Hash::make($data['password']);
+        unset($data['_token']);
 
         try {
             // create new user
@@ -53,12 +61,24 @@ class UserController extends Controller
                 return json_decode($user);
 
             // response
-            return response()->json("New user created!");
+            return redirect('/users')->with([
+                'success' => 'New user created!',
+            ]);
 
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json("Something went wrong, couldn't create user!", 500);
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t create new user, please try again!',
+            ]);
         }
+    }
+
+    public function edit(int $id)
+    {
+        $user = $this->userService->getById($id);
+        return view('users.edit')->with([
+            'user' => $user,
+        ]);
     }
 
     public function update(Request $request, $id)
