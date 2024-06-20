@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contract\Users\UserInterface;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +11,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements UserInterface
 {
     use HasApiTokens;
     use HasFactory;
@@ -58,4 +59,25 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function role()
+    {
+        return $this->belongsToMany(Role::class, 'users_roles', 'user_id', 'role_id');
+    }
+
+    public function userRole()
+    {
+        return $this->hasOne(UserRole::class, 'user_id');
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'user_id');
+    }
+
+//    // de-unique email if user has been deleted
+//    public function scopeActive($query)
+//    {
+//        return $query->whereNull('deleted_at');
+//    }
 }

@@ -26,12 +26,12 @@ class StudentController extends Controller
         $this->userRoleService = $userRoleService;
     }
 
-    public function getAll()
+    public function index()
     {
         return StudentResource::collection($this->studentService->getAll());
     }
 
-    public function getById(int $id)
+    public function show(int $id)
     {
         $student = $this->studentService->getById($id);
 
@@ -41,7 +41,7 @@ class StudentController extends Controller
         return response()->json("Couldn't find the target student!", 404);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $data = $request->all();
 
@@ -113,7 +113,7 @@ class StudentController extends Controller
         }
     }
 
-    public function delete(int $id)
+    public function destroy(int $id)
     {
         try {
 

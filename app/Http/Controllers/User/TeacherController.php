@@ -27,13 +27,13 @@ class TeacherController extends Controller
         $this->userRoleService = $userRoleService;
     }
 
-    public function getAll()
+    public function index()
     {
         $teachers = $this->teacherService->getAll();
         return TeacherResource::collection($teachers);
     }
 
-    public function getById(int $id)
+    public function show(int $id)
     {
         if ($this->teacherService->getById($id))
             return new TeacherResource($this->teacherService->getById($id));
@@ -41,7 +41,7 @@ class TeacherController extends Controller
         return response()->json("Can not find the target teacher!");
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $data = $request->all();
 
@@ -109,7 +109,7 @@ class TeacherController extends Controller
 
     }
 
-    public function delete(int $id)
+    public function destroy(int $id)
     {
         $teacher = $this->teacherService->getById($id);
         if (!$teacher) return response()->json("Couldn't find the target teacher!");
