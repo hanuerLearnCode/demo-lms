@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Jobs\SendWelcomeEmailJob;
 use App\Mail\WelcomeNewUser;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,6 +30,6 @@ class SendWelcomeEmailListener
     public function handle(Registered $event)
     {
         //
-        Mail::to($event->user->email)->send(new WelcomeNewUser($event->user));
+        dispatch(new SendWelcomeEmailJob($event->user));
     }
 }
