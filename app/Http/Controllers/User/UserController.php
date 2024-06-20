@@ -44,6 +44,8 @@ class UserController extends Controller
 
         $data = $request->all();
 
+        $data['password'] = Hash::make($data['password']);
+
         try {
             // create new user
             $user = $this->userService->create($data);
@@ -64,6 +66,8 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+
+        if (isset($data['password'])) $data['password'] = Hash::make($data['password']);
 
         try {
 
