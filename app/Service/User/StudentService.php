@@ -11,12 +11,12 @@ class StudentService implements UserRepositoryInterface
 
     public function getAll()
     {
-        return Student::with('user')->with('officeClass')->with('faculty')->get();
+        return Student::with('user')->with('officeClass')->with('faculty')->with('courses')->with('studentCourse')->get();
     }
 
     public function getById(int $id)
     {
-        return Student::with('user')->with('officeClass')->with('faculty')->find($id);
+        return Student::with('user')->with('officeClass')->with('faculty')->with('courses')->find($id);
     }
 
     public function create(array $data = [])
