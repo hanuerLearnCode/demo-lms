@@ -31,4 +31,14 @@ class Student extends Model implements UserInterface
     {
         return $this->belongsTo(Faculty::class, 'faculty_id');
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'students_courses', 'student_id', 'course_id');
+    }
+
+    public function studentCourse()
+    {
+        return $this->hasMany(StudentCourse::class, 'student_id');
+    }
 }

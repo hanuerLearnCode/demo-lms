@@ -20,6 +20,14 @@ class StudentResource extends JsonResource
             'email' => $this->user->email,
             'office_class' => $this->officeClass->name,
             'faculty' => $this->faculty->name,
+            'courses' => $this->courses->map(function ($course) {
+                return [
+                    'course_id' => $course->id,
+                    'name' => $course->name,
+                    'abbreviation' => $course->abbreviation,
+                    'credit' => $course->credit,
+                ];
+            }),
         ];
     }
 }
