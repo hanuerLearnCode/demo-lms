@@ -80,4 +80,12 @@ class User extends Authenticatable implements UserInterface
 //    {
 //        return $query->whereNull('deleted_at');
 //    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role->first()?->id == Role::ADMIN_ROLE_ID;
+    }
 }
