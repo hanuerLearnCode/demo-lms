@@ -18,29 +18,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('/users')->group(function () {
-    Route::get('/', [\App\Http\Controllers\User\UserController::class, 'getAll']);
-    Route::get('/{id}', [\App\Http\Controllers\User\UserController::class, 'getById']);
-    Route::post('/', [\App\Http\Controllers\User\UserController::class, 'create']);
-    Route::put('/{id}', [\App\Http\Controllers\User\UserController::class, 'update']);
-    Route::delete('/{id}', [\App\Http\Controllers\User\UserController::class, 'delete']);
-});
+// protect api
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('users', \App\Http\Controllers\User\UserController::class);
 
-Route::prefix('/students')->group(function () {
-    Route::get('/', [\App\Http\Controllers\User\StudentController::class, 'getAll']);
-    Route::get('/{id}', [\App\Http\Controllers\User\StudentController::class, 'getById']);
-    Route::post('/', [\App\Http\Controllers\User\StudentController::class, 'create']);
-    Route::put('/{id}', [\App\Http\Controllers\User\StudentController::class, 'update']);
-    Route::delete('/{id}', [\App\Http\Controllers\User\StudentController::class, 'delete']);
-});
+    Route::resource('students', \App\Http\Controllers\User\StudentController::class);
 
-Route::prefix('/teachers')->group(function () {
-    Route::get('/', [\App\Http\Controllers\User\TeacherController::class, 'getAll']);
-    Route::get('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'getById']);
-    Route::post('/', [\App\Http\Controllers\User\TeacherController::class, 'create']);
-    Route::put('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'update']);
-    Route::delete('/{id}', [\App\Http\Controllers\User\TeacherController::class, 'delete']);
-});
+    Route::resource('teachers', \App\Http\Controllers\User\TeacherController::class);
 
-Route::resource('office_classes', \App\Http\Controllers\OfficeClassController::class);
-Route::resource('faculties', \App\Http\Controllers\FacultyController::class);
+    Route::resource('office_classes', \App\Http\Controllers\OfficeClassController::class);
+    Route::resource('faculties', \App\Http\Controllers\FacultyController::class);
+});

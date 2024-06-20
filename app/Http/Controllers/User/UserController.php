@@ -24,12 +24,12 @@ class UserController extends Controller
         $this->userRoleService = $userRoleService;
     }
 
-    public function getAll()
+    public function index()
     {
         return UserResource::collection($this->userService->getAll());
     }
 
-    public function getById(int $id)
+    public function show(int $id)
     {
         $user = $this->userService->getById($id);
         if ($user) {
@@ -39,10 +39,12 @@ class UserController extends Controller
         return response()->json("Couldn't find the target user!", 404);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
 
         $data = $request->all();
+
+        $data['password'] = Hash::make($data['password']);
 
         try {
             // create new user
@@ -64,6 +66,8 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+
+        if (isset($data['password'])) $data['password'] = Hash::make($data['password']);
 
         try {
 
@@ -88,7 +92,7 @@ class UserController extends Controller
         }
     }
 
-    public function delete(int $id)
+    public function destroy(int $id)
     {
         $user = $this->userService->getById($id);
 

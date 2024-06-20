@@ -5,16 +5,19 @@ namespace App\Models;
 use App\Contract\Users\UserInterface;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements UserInterface
 {
-    use HasApiTokens, HasFactory, Notifiable;
-    use SoftDeletes;
-
+    use HasApiTokens;
+    use HasFactory;
+    use HasProfilePhoto;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +38,8 @@ class User extends Authenticatable implements UserInterface
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     /**
@@ -44,6 +49,15 @@ class User extends Authenticatable implements UserInterface
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     public function role()
@@ -61,9 +75,9 @@ class User extends Authenticatable implements UserInterface
         return $this->hasOne(Student::class, 'user_id');
     }
 
-    // de-unique email if user has been deleted
-    public function scopeActive($query)
-    {
-        return $query->whereNull('deleted_at');
-    }
+//    // de-unique email if user has been deleted
+//    public function scopeActive($query)
+//    {
+//        return $query->whereNull('deleted_at');
+//    }
 }
