@@ -21,13 +21,6 @@
                         <div class="col-md-10">
                             <h2 class="w-full text-lg text-left px-6 py-3">Users List</h2>
                         </div>
-                        <div class="col-md-2 add-user">
-                            <a class="btn btn-primary" href="{{ route('users.create') }}">
-                                <button>
-                                    New User
-                                </button>
-                            </a>
-                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-md text-left text-gray-500 dark:text-gray-400">

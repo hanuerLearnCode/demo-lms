@@ -21,12 +21,12 @@
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
-                        <form class="form" method="post" action="{{ route('users.store') }}">
+                        <form class="form" method="post" action="{{ route('users.update', $user->id) }}">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control rounded-md" id="name"
-                                       name="name" value="{{ old('name') }}" required>
+                                       name="name" value="{{ $user->name }}" required>
                                 @error('name')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -34,7 +34,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
                                 <input type="email" class="form-control rounded-md" id="email" name="email"
-                                       aria-describedby="emailHelp" value="{{ old('email') }}" required>
+                                       aria-describedby="emailHelp" value="{{ $user->email }}" required>
                                 @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror

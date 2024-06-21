@@ -58,10 +58,10 @@ class UserController extends Controller
 
             // if
             if (!($user instanceof User))
-                return json_decode($user);
+                return redirect()->back()->withErrors($user)->withInput();
 
             // response
-            return redirect('/users')->with([
+            return redirect(route('students.create'))->with([
                 'success' => 'New user created!',
             ]);
 
@@ -92,15 +92,17 @@ class UserController extends Controller
             $user = $this->userService->getById($id);
 
             if (!$user)
-                return response()->json("Couldn't find the target user!");
+                return redirect()->back()->withErrors($user)->withInput();
 
             // update user infor
             $update = $this->userService->update($user, $data);
 
             if ($update !== true) {
-                return $update;
+                return redirect()->back()->withErrors($update)->withInput();
             } else {
-                return response()->json("User updated!");
+                return redirect('/users')->with([
+                    'success' => 'User has been updated!',
+                ]);
             }
 
 

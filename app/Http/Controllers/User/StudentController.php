@@ -31,6 +31,11 @@ class StudentController extends Controller
         return StudentResource::collection($this->studentService->getAll());
     }
 
+    public function create()
+    {
+        return view('students.add');
+    }
+
     public function show(int $id)
     {
         $student = $this->studentService->getById($id);
