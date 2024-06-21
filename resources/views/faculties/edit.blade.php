@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <main class="container">
+    <main class="">
         <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-8 lg:px-8">
                 @if(session('error'))
@@ -21,14 +21,15 @@
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
-                        <form class="form" method="post" action="{{ route('faculties.update', $faculty) }}">
+                        <form class="form" method="post" action="{{ route('faculties.update', $faculty->id) }}">
                             @csrf
+                            @method('PUT')
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control rounded-md" id="name"
                                        name="name" value="{{ $faculty->name }}" required>
                                 @error('name')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
@@ -37,7 +38,7 @@
                                        name="abbreviation"
                                        value="{{ $faculty->abbreviation }}" required>
                                 @error('abbreviation')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mt-3 d-flex justify-content-center align-items-center row">

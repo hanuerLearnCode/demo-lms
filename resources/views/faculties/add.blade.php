@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <main class="container">
+    <main class="">
         <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-8 lg:px-8">
                 @if(session('error'))
