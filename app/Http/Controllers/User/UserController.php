@@ -24,7 +24,10 @@ class UserController extends Controller
 
     public function index()
     {
-        return UserResource::collection($this->userService->getAll());
+        $users = UserResource::collection($this->userService->getAll()->paginate(10));
+        return view('users.index')->with([
+            'users' => $users,
+        ]);
     }
 
     public function show(int $id)
@@ -37,12 +40,18 @@ class UserController extends Controller
         return response()->json("Couldn't find the target user!", 404);
     }
 
+    // Regiter new user (?)
+    public function create()
+    {
+        return view('users.add');
+    }
+
     public function store(Request $request)
     {
 
         $data = $request->all();
 
-        $data['password'] = Hash::make($data['password']);
+        unset($data['_token']);
 
         try {
             // create new user
@@ -50,15 +59,27 @@ class UserController extends Controller
 
             // if
             if (!($user instanceof User))
-                return json_decode($user);
+                return redirect()->back()->withErrors($user)->withInput();
 
             // response
-            return response()->json("New user created!");
+            return redirect(route('students.create'))->with([
+                'success' => 'New user created!',
+            ]);
 
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json("Something went wrong, couldn't create user!", 500);
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t create new user, please try again!',
+            ]);
         }
+    }
+
+    public function edit(int $id)
+    {
+        $user = $this->userService->getById($id);
+        return view('users.edit')->with([
+            'user' => $user,
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -72,15 +93,17 @@ class UserController extends Controller
             $user = $this->userService->getById($id);
 
             if (!$user)
-                return response()->json("Couldn't find the target user!");
+                return redirect()->back()->withErrors($user)->withInput();
 
             // update user infor
             $update = $this->userService->update($user, $data);
 
             if ($update !== true) {
-                return $update;
+                return redirect()->back()->withErrors($update)->withInput();
             } else {
-                return response()->json("User updated!");
+                return redirect('/users')->with([
+                    'success' => 'User has been updated!',
+                ]);
             }
 
 

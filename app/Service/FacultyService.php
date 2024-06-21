@@ -12,7 +12,7 @@ class FacultyService implements RepositoryInterface
 
     public function getAll()
     {
-        return Faculty::with('officeClasses')->with('students')->get();
+        return Faculty::with('officeClasses')->with('students');
     }
 
     public function getById(int $id)

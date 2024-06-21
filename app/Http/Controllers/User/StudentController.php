@@ -28,7 +28,10 @@ class StudentController extends Controller
 
     public function index()
     {
-        return StudentResource::collection($this->studentService->getAll());
+        $students = StudentResource::collection($this->studentService->getAll()->paginate(10));
+        return view('students.index')->with([
+            'students' => $students,
+        ]);
     }
 
     public function show(int $id)
@@ -39,6 +42,11 @@ class StudentController extends Controller
             return new StudentResource($student);
 
         return response()->json("Couldn't find the target student!", 404);
+    }
+
+    public function create()
+    {
+        return view('students.add');
     }
 
     public function store(Request $request)
@@ -52,7 +60,7 @@ class StudentController extends Controller
 
             // if user infor is invalid
             if (!($user instanceof User))
-                return json_decode($user);
+                return redirect()->back()->withErrors($user)->withInput();
 
             // save to students table
             $student_infor = [
