@@ -38,7 +38,8 @@
 
     <!-- Page Content -->
     <main>
-        {{--        {{ $slot }}--}}
+        {{-- {{ $slot }}--}}
+{{--        @include('profile.show')--}}
         @yield('content')
     </main>
 </div>

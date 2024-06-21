@@ -11,7 +11,7 @@ class StudentService implements UserRepositoryInterface
 
     public function getAll()
     {
-        return Student::with('user')->with('officeClass')->with('faculty')->with('courses')->with('studentCourse')->get();
+        return Student::with('user')->with('officeClass')->with('faculty')->with('courses')->with('studentCourse');
     }
 
     public function getById(int $id)

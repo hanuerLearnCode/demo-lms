@@ -24,7 +24,10 @@ class FacultyController extends Controller
     public function index()
     {
         //
-        return FacultyResource::collection($this->facultyService->getAll());
+        $faculties = FacultyResource::collection($this->facultyService->getAll()->paginate(10));
+        return view('faculties.index')->with([
+            'faculties' => $faculties,
+        ]);
     }
 
     /**
@@ -46,6 +49,7 @@ class FacultyController extends Controller
     public function create()
     {
         //
+        return view('faculties.add');
     }
 
     /**
@@ -65,16 +69,19 @@ class FacultyController extends Controller
                     }),
                 ],
             ]);
+
             $this->facultyService->create($data);
 
-            return response()->json('New faculty created!');
+            return redirect('faculties')->with([
+                'success' => 'New faculty created!',
+            ]);
         } catch (ValidationException $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 422);
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json('Couldn\'t create new faculty!');
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t create new faculty, please try again!',
+            ]);
         }
     }
 
@@ -85,6 +92,11 @@ class FacultyController extends Controller
     public function edit($id)
     {
         //
+        $faculty = $this->facultyService->getById($id);
+
+        return view('faculties.edit')->with([
+            'faculty' => $faculty,
+        ]);
     }
 
     /**
@@ -111,14 +123,16 @@ class FacultyController extends Controller
 
             $this->facultyService->update($faculty, $data);
 
-            return response()->json('Faculty updated successfully!');
+            return redirect('/faculties')->with([
+                'success' => 'Facutlty updated!',
+            ]);
         } catch (ValidationException $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 422);
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json('Couldn\'t update faculty!');
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t update this faculty, please try again!',
+            ]);
         }
     }
 

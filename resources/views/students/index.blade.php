@@ -19,13 +19,20 @@
 
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-10">
-                            <h2 class="w-full text-lg text-left px-6 py-3">Users List</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">Students List</h2>
+                        </div>
+                        <div class="col-md-2 add-user">
+                            <a class="btn btn-primary" href="{{ route('students.create') }}">
+                                <button>
+                                    New Student
+                                </button>
+                            </a>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-md text-left text-gray-500 dark:text-gray-400">
                             <thead
-                                    class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     #
@@ -37,15 +44,18 @@
                                     Email
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Role
+                                    Class
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Created at
+                                    Faculty
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Action
                                 </th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($users as $user)
+                            @foreach($students as $student)
                                 @php
                                     $count++;
                                 @endphp
@@ -54,16 +64,30 @@
                                         {{ $count }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $user->name }}
+                                        {{ $student->user->name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $user->email }}
+                                        {{ $student->user->email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $user->role->first() ? ucfirst($user->role->first()->title) : null }}
+                                        {{ $student->officeClass->name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $user->created_at }}
+                                        {{ $student->faculty->name }}
+                                    </td>
+                                    <td class="px-6 py-4 me-2 row">
+                                        <div class="px-1 py-1 col-md-6">
+                                            <a class="btn btn-outline-primary w-100"
+                                               href="{{ route('students.edit', $student->id) }}">
+                                                Edit
+                                            </a>
+                                        </div>
+                                        <div class="px-1 py-1 col-md-6">
+                                            <a class="btn btn-outline-danger w-100"
+                                               href="{{ route('students.destroy', $student->id) }}">
+                                                Delete
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -71,7 +95,7 @@
                         </table>
                     </div>
                     <div class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
-                        {{ $users->onEachSide(2)->links() }}
+                        {{ $students->onEachSide(2)->links() }}
                     </div>
                 </div>
             </div>

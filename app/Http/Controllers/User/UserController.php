@@ -40,6 +40,7 @@ class UserController extends Controller
         return response()->json("Couldn't find the target user!", 404);
     }
 
+    // Regiter new user (?)
     public function create()
     {
         return view('users.add');

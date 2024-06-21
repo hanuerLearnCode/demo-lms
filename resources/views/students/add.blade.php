@@ -17,7 +17,7 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-10">
-                            <h2 class="w-full text-lg text-left px-6 py-3">New User</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">New Student</h2>
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
@@ -36,6 +36,23 @@
                                 <input type="email" class="form-control rounded-md" id="email" name="email"
                                        aria-describedby="emailHelp" value="{{ old('email') }}" required>
                                 @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="office_classs_id" class="form-label">Class</label>
+                                <input type="text" class="form-control rounded-md" id="office_classs_id"
+                                       name="office_classs_id"
+                                       aria-describedby="emailHelp" value="{{ old('office_classs_id') }}" required>
+                                @error('office_classs')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="faculty_id" class="form-label">Faculty</label>
+                                <input type="text" class="form-control rounded-md" id="faculty_id" name="faculty_id"
+                                       aria-describedby="emailHelp" value="{{ old('faculty_id') }}" required>
+                                @error('faculty_id')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -60,10 +77,10 @@
                                 <div class="col-md-10">
                                 </div>
                                 <div class="col-md-2 d-flex justify-content-end align-items-center">
-                                    <a href="{{ route('users.index')}}" class="me-2 flex-grow-1">
-                                        <button type="button" class="btn btn-outline-danger w-100">Cancel</button>
+                                    <a href="{{ route('students.index')}}" class="me-2 flex-grow-1 w-100">
+                                        <button type="button" class="btn btn-outline-danger">Cancel</button>
                                     </a>
-                                    <button type="submit" class="btn btn-primary flex-grow-1 fw-bold w-100">Next
+                                    <button type="submit" class="btn btn-primary flex-grow-1 fw-bold w-100">Submit
                                     </button>
                                 </div>
                             </div>

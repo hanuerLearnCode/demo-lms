@@ -17,7 +17,7 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-10">
-                            <h2 class="w-full text-lg text-left px-6 py-3">New User</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">Update User</h2>
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
@@ -38,6 +38,16 @@
                                 @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">User role</label>
+                                <select id="role" name="role" class="form-select" aria-label="Default select example">
+                                    <option selected>Select this user role</option>
+                                    <option value="1">Admin</option>
+                                    <option value="2">Student</option>
+                                    <option value="3">Teacher</option>
+                                    <option value="4">Parent</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
