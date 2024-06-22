@@ -16,8 +16,8 @@
 
     {{--        livewire scripts--}}
     <!-- Scripts -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!-- Styles -->
     @livewireStyles
 </head>
@@ -39,7 +39,7 @@
     <!-- Page Content -->
     <main>
         {{-- {{ $slot }}--}}
-{{--        @include('profile.show')--}}
+        {{--        @include('profile.show')--}}
         @yield('content')
     </main>
 </div>

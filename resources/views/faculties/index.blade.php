@@ -7,7 +7,7 @@
         <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-8 lg:px-8">
                 @if(session('success'))
-                    <div class="session app-content ml-3 mr-2 w-100">
+                    <div class="session mt-3 w-100">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
@@ -18,10 +18,23 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
                     <div class="overflow-x-auto flex items-center row">
-                        <div class="col-md-10">
+                        <div class="col-md-6">
                             <h2 class="w-full text-lg text-left px-6 py-3">Faculties List</h2>
                         </div>
-                        <div class="col-md-2 add-user">
+                        <div class="col-md-4 h-75">
+                            <form class="d-flex" method="GET" action="{{ route('faculties.search') }}">
+                                @csrf  {{-- Include CSRF token if needed for search functionality --}}
+                                <div class="input-group">
+                                    <input type="text" class="form-control rounded-md py-2 border-gray-300"
+                                           name="search" id="searchInput" placeholder="Search faculties..."
+                                           aria-label="Search">
+                                    <button class="btn btn-outline-primary rounded-md" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-2">
                             <a class="btn btn-primary" href="{{ route('faculties.create') }}">
                                 <button>
                                     New faculty
@@ -30,7 +43,7 @@
                         </div>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-md text-left text-gray-500 dark:text-gray-400">
+                        <table id="table" class="w-full text-md text-center text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -51,25 +64,25 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table_body" class="initial-tbody">
                             @foreach($faculties as $faculty)
                                 @php
                                     $count++;
                                 @endphp
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-3">
                                         {{ $count }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-3">
                                         {{ $faculty->name }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-3">
                                         {{ $faculty->abbreviation }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-3">
                                         {{ $faculty->created_at }}
                                     </td>
-                                    <td class="px-6 py-4 me-2 row">
+                                    <td class="px-6 py-3 me-2 row">
                                         <div class="px-1 py-1 col-md-6">
                                             <a class="btn btn-outline-primary w-100"
                                                href="{{ route('faculties.edit', $faculty->id) }}">
@@ -77,10 +90,13 @@
                                             </a>
                                         </div>
                                         <div class="px-1 py-1 col-md-6">
-                                            <a class="btn btn-outline-danger w-100"
-                                               href="{{ route('faculties.destroy', $faculty->id) }}">
-                                                Delete
-                                            </a>
+                                            <form method="POST" action="{{ route('faculties.destroy', $faculty->id) }}"
+                                                  onsubmit="return confirm('Are you sure deleting this faculty?')">
+                                                @csrf  {{-- Include CSRF token --}}
+                                                @method('DELETE')  {{-- Specify DELETE method --}}
+                                                <button type="submit" class="btn btn-outline-danger w-100">Delete
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -95,5 +111,72 @@
             </div>
         </div>
     </main>
+
+    <script type="module">
+
+        /**
+         * Live search box
+         * @param input
+         */
+        $(document).ready(function () {
+
+            // query caching
+            let lastQuery = '';
+
+            $('#searchInput').on('input', function () {
+                let query = $(this).val();
+
+                if (query !== lastQuery) {
+                    $.ajax({
+                        url: '{{ route("faculties.search") }}', // Create this route in your Laravel app
+                        method: 'GET',
+                        header: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        data: {query: query},
+                        success: function (response) {
+                            $('#table_body').html(response);
+                        },
+                        error: function (xhr) {
+                            console.log('Error:', xhr);
+                        }
+                    });
+
+                    lastQuery = query;
+                }
+            });
+        });
+
+        /**
+         * Perform searching when the form is submitted
+         */
+        // $(document).ready(function () {
+        //     $(".form").submit(function (event) {
+        //         event.preventDefault();
+        //
+        //         let searchTerm = document.getElementById('search').value;
+        //
+        //         $.ajax({
+        //             url: "",
+        //             method: "GET",
+        //             header: {
+        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        //             },
+        //             data: {input: searchTerm, date: date},
+        //             dataType: "json",
+        //             success: function (data) {
+        //                 $('.search-result').removeClass('d-none');
+        //                 $(".search-result").html(data.data);
+        //             },
+        //             error: function (error) {
+        //                 console.error(error);
+        //                 // Handle errors here
+        //             }
+        //         });
+        //     });
+        // });
+
+    </script>
+
 @endsection
 

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+require_once __DIR__ . '/search.php';
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -40,6 +42,7 @@ Route::middleware([
     Route::resource('teachers', \App\Http\Controllers\User\TeacherController::class);
 
     Route::resource('office_classes', \App\Http\Controllers\OfficeClassController::class);
+
     Route::resource('faculties', \App\Http\Controllers\FacultyController::class);
 
     Route::resource('courses', \App\Http\Controllers\CourseController::class);

@@ -6,6 +6,7 @@ use App\Http\Resources\FacultyResource;
 use App\Models\Faculty;
 use App\Service\FacultyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -24,7 +25,7 @@ class FacultyController extends Controller
     public function index()
     {
         //
-        $faculties = FacultyResource::collection($this->facultyService->getAll()->paginate(10));
+        $faculties = FacultyResource::collection($this->facultyService->getAll()->paginate(20));
         return view('faculties.index')->with([
             'faculties' => $faculties,
         ]);
@@ -120,8 +121,11 @@ class FacultyController extends Controller
                 ],
             ]);
 
+            $update = $this->facultyService->update($faculty, $data);
 
-            $this->facultyService->update($faculty, $data);
+            if (!$update) return redirect()->back()->with([
+                'error' => 'Couldn\'t update this faculty, please try again!',
+            ]);
 
             return redirect('/faculties')->with([
                 'success' => 'Facutlty updated!',
@@ -145,9 +149,41 @@ class FacultyController extends Controller
         //
         $faculty = $this->facultyService->getById($id);
 
-        if (!$faculty) return response()->json('Couldn\'t find the target faculty!');
+        if (!$faculty) return redirect()->back()->with([
+            'error' => 'Couldn\'t find this faculty!',
+        ]);
 
-        $this->facultyService->delete($faculty);
-        return response()->json('Faculty deleted!');
+        $deleted = $this->facultyService->delete($faculty);
+
+        if (!$deleted) return redirect()->back()->with([
+            'error' => 'Couldn\'t delete this faculty!'
+        ]);
+
+        return redirect('/faculties')->with([
+            'success' => 'Facutlty deleted!',
+        ]);
+    }
+
+    public function search(Request $request): string
+    {
+        $query = $request->input('query');
+
+        // using laravel caching system to optimize search
+        $faculties = Cache::remember('faculties_search_' . $query, 3600, function () use ($query) {
+            return Faculty::where('name', 'like', "%$query%")
+                ->orWhere('abbreviation', 'like', "%$query%")
+                ->paginate(10); // optimize search with paginate
+        });
+
+        $count = 0;
+        $html = '';
+
+        if (count($faculties) <= 0) return '<tr><td colspan="5" class="px-6 py-4 text-center">No results for your search</td></tr>';
+
+        foreach ($faculties as $faculty) {
+            $count++;
+            $html .= view('partials.faculty_row', compact('faculty', 'count'))->render();
+        }
+        return $html;
     }
 }
