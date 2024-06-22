@@ -4,8 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\StudentResource;
+use App\Models\OfficeClass;
 use App\Models\Role;
 use App\Models\User;
+use App\Service\FacultyService;
+use App\Service\OfficeClassService;
 use App\Service\User\StudentService;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
@@ -18,17 +21,22 @@ class StudentController extends Controller
     protected UserService $userService;
     protected StudentService $studentService;
     protected UserRoleService $userRoleService;
+//    protected OfficeClassService $officeClassService;
+    protected FacultyService $facultyService;
 
-    public function __construct(UserService $userService, StudentService $studentService, UserRoleService $userRoleService)
+    public function __construct(UserService     $userService, StudentService $studentService,
+                                UserRoleService $userRoleService, FacultyService $facultyService)
     {
         $this->userService = $userService;
         $this->studentService = $studentService;
         $this->userRoleService = $userRoleService;
+//        $this->officeClassService = $officeClassService;
+        $this->facultyService = $facultyService;
     }
 
     public function index()
     {
-        $students = StudentResource::collection($this->studentService->getAll()->paginate(10));
+        $students = StudentResource::collection($this->studentService->getAll()->orderBy('faculty_id')->paginate(10));
         return view('students.index')->with([
             'students' => $students,
         ]);
@@ -46,12 +54,17 @@ class StudentController extends Controller
 
     public function create()
     {
-        return view('students.add');
+        $faculties = $this->facultyService->getAll()->get();
+        return view('students.add')->with([
+            'faculties' => $faculties,
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
+
+        unset($data['_token']);
 
         try {
 
@@ -78,16 +91,31 @@ class StudentController extends Controller
             $this->userRoleService->create($role_data);
 
             // return msg
-            return response()->json('New Student created!');
+            return redirect('/students')->with([
+                'success' => 'New Student created!',
+            ]);
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json('Something went wrong, couldn\'t create student!');
+            return redirect()->back()->with([
+                'success' => 'Couldn\'t create new student!',
+            ]);
         }
+    }
+
+    public function edit(int $id)
+    {
+        $student = $this->studentService->getById($id);
+        $faculties = $this->facultyService->getAll()->get();
+        return view('students.edit')->with([
+            'student' => $student,
+            'faculties' => $faculties,
+        ]);
     }
 
     public function update(Request $request, int $id)
     {
         $data = $request->all();
+
         try {
 
             $student = $this->studentService->getById($id);
@@ -104,12 +132,16 @@ class StudentController extends Controller
                 return $update;
             }
 
-
             // update student infor
             $updateStudentData = [
                 'office_class_id' => $data['office_class_id'],
                 'faculty_id' => $data['faculty_id'],
             ];
+
+            $updateStudentData = $request->validate($updateStudentData, [
+                'faculty_id' => '',
+                'office_class_id' => ''
+            ]);
 
             $this->studentService->update($student, $updateStudentData);
 
