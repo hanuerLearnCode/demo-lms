@@ -14,6 +14,11 @@ class OfficeClass extends Model implements ModelInterface
 
     protected $table = 'office_classes';
 
+    protected $fillable = [
+        'name',
+        'faculty_id',
+    ];
+
     public function faculty()
     {
         return $this->belongsTo(Faculty::class, 'faculty_id');
