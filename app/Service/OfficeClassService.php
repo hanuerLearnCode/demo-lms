@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Contract\ModelInterface;
 use App\Contract\RepositoryInterface;
 use App\Models\OfficeClass;
 
@@ -9,7 +10,7 @@ class OfficeClassService implements RepositoryInterface
 {
     public function getAll()
     {
-        return OfficeClass::with('students')->with('faculty')->get();
+        return OfficeClass::with('students')->with('faculty');
     }
 
     public function getById(int $id)
@@ -19,14 +20,16 @@ class OfficeClassService implements RepositoryInterface
 
     public function create(array $data = [])
     {
-
+        return OfficeClass::create($data);
     }
 
-    public function update(OfficeClass $officeClass, array $data = [])
+    public function update(ModelInterface $officeClass, array $data = [])
     {
+        return $officeClass->update($data);
     }
 
-    public function delete(OfficeClass $officeClass)
+    public function delete(ModelInterface $officeClass)
     {
+        return $officeClass->delete();
     }
 }

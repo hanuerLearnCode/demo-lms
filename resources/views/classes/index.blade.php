@@ -19,14 +19,14 @@
 
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-6">
-                            <h2 class="w-full text-lg text-left px-6 py-3">Faculties List</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">Classes List</h2>
                         </div>
                         <div class="col-md-4 h-75">
-                            <form class="d-flex" method="GET" action="{{ route('faculties.search') }}">
+                            <form class="d-flex" method="GET" action="{{ route('office_classes.search') }}">
                                 @csrf  {{-- Include CSRF token if needed for search functionality --}}
                                 <div class="input-group">
                                     <input type="text" class="form-control rounded-md py-2 border-gray-300"
-                                           name="search" id="searchInput" placeholder="Search faculties..."
+                                           name="search" id="searchInput" placeholder="Search classes..."
                                            aria-label="Search">
                                     <button class="btn btn-outline-primary rounded-md" type="submit">
                                         <i class="fas fa-search"></i>
@@ -35,9 +35,9 @@
                             </form>
                         </div>
                         <div class="col-md-2">
-                            <a class="btn btn-primary" href="{{ route('faculties.create') }}">
+                            <a class="btn btn-primary" href="{{ route('office_classes.create') }}">
                                 <button>
-                                    New faculty
+                                    New class
                                 </button>
                             </a>
                         </div>
@@ -54,7 +54,10 @@
                                     Name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Abbreviation
+                                    Faculty
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Number of Students
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Created at
@@ -65,7 +68,7 @@
                             </tr>
                             </thead>
                             <tbody id="table_body" class="initial-tbody">
-                            @foreach($faculties as $faculty)
+                            @foreach($classes as $class)
                                 @php
                                     $count++;
                                 @endphp
@@ -74,24 +77,28 @@
                                         {{ $count }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $faculty->name }}
+                                        {{ $class->name }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $faculty->abbreviation }}
+                                        {{ $class->faculty->name }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $faculty->created_at }}
+                                        {{ count($class->students) }}
+                                    </td>
+                                    <td class="px-6 py-3">
+                                        {{ $class->created_at }}
                                     </td>
                                     <td class="px-6 py-3 me-2 row">
                                         <div class="px-1 py-1 col-md-6">
                                             <a class="btn btn-outline-primary w-100"
-                                               href="{{ route('faculties.edit', $faculty->id) }}">
+                                               href="{{ route('office_classes.edit', $class->id) }}">
                                                 Edit
                                             </a>
                                         </div>
                                         <div class="px-1 py-1 col-md-6">
-                                            <form method="POST" action="{{ route('faculties.destroy', $faculty->id) }}"
-                                                  onsubmit="return confirm('Are you sure deleting this faculty?')">
+                                            <form method="POST"
+                                                  action="{{ route('office_classes.destroy', $class->id) }}"
+                                                  onsubmit="return confirm('Are you sure deleting this class?')">
                                                 @csrf  {{-- Include CSRF token --}}
                                                 @method('DELETE')  {{-- Specify DELETE method --}}
                                                 <button type="submit" class="btn btn-outline-danger w-100">Delete
@@ -105,7 +112,7 @@
                         </table>
                     </div>
                     <div id="paginate" class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
-                        {{ $faculties->onEachSide(2)->links() }}
+                        {{ $classes->onEachSide(2)->links() }}
                     </div>
                 </div>
             </div>
@@ -116,7 +123,6 @@
 
         /**
          * Live search box
-         * @param input
          */
         $(document).ready(function () {
 
@@ -127,8 +133,9 @@
                 let query = $(this).val();
 
                 if (query !== lastQuery) {
+
                     $.ajax({
-                        url: '{{ route("faculties.search") }}', // Create this route in your Laravel app
+                        url: '{{ route("office_classes.search") }}', // Create this route in your Laravel app
                         method: 'GET',
                         header: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -136,7 +143,6 @@
                         data: {query: query},
                         success: function (response) {
                             $('#table_body').html(response);
-                            $('#paginate').addClass('d-none');
                         },
                         error: function (xhr) {
                             console.log('Error:', xhr);
@@ -147,35 +153,6 @@
                 }
             });
         });
-
-        /**
-         * Perform searching when the form is submitted
-         */
-        // $(document).ready(function () {
-        //     $(".form").submit(function (event) {
-        //         event.preventDefault();
-        //
-        //         let searchTerm = document.getElementById('search').value;
-        //
-        //         $.ajax({
-        //             url: "",
-        //             method: "GET",
-        //             header: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-        //             },
-        //             data: {input: searchTerm, date: date},
-        //             dataType: "json",
-        //             success: function (data) {
-        //                 $('.search-result').removeClass('d-none');
-        //                 $(".search-result").html(data.data);
-        //             },
-        //             error: function (error) {
-        //                 console.error(error);
-        //                 // Handle errors here
-        //             }
-        //         });
-        //     });
-        // });
 
     </script>
 
