@@ -25,7 +25,7 @@ class FacultyController extends Controller
     public function index()
     {
         //
-        $faculties = FacultyResource::collection($this->facultyService->getAll()->paginate(10));
+        $faculties = FacultyResource::collection($this->facultyService->getAll()->paginate(20));
         return view('faculties.index')->with([
             'faculties' => $faculties,
         ]);
@@ -172,7 +172,7 @@ class FacultyController extends Controller
         $faculties = Cache::remember('faculties_search_' . $query, 3600, function () use ($query) {
             return Faculty::where('name', 'like', "%$query%")
                 ->orWhere('abbreviation', 'like', "%$query%")
-                ->paginate(20); // optimize search with paginate
+                ->paginate(10); // optimize search with paginate
         });
 
         $count = 0;
