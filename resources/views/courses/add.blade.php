@@ -17,17 +17,41 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-10">
-                            <h2 class="w-full text-lg text-left px-6 py-3">New class</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">New course</h2>
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
-                        <form class="form" method="post" action="{{ route('office_classes.store') }}">
+                        <form class="form" method="post" action="{{ route('courses.store') }}">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control rounded-md" id="name"
                                        name="name" value="{{ old('name') }}" required>
                                 @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="abbreviation" class="form-label">Abbreviation</label>
+                                <input type="text" class="form-control rounded-md" id="abbreviation"
+                                       name="abbreviation" value="{{ old('abbreviation') }}" required>
+                                @error('abbreviation')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="enrollment_key" class="form-label">Enrollment Key</label>
+                                <input type="text" class="form-control rounded-md" id="enrollment_key"
+                                       name="enrollment_key" value="{{ old('enrollment_key') }}" required>
+                                @error('enrollment_key')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="credit" class="form-label">Credit</label>
+                                <input type="text" class="form-control rounded-md" id="credit"
+                                       name="credit" value="{{ old('credit') }}" required>
+                                @error('credit')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -48,7 +72,7 @@
                                 <div class="col-md-10">
                                 </div>
                                 <div class="col-md-2 d-flex justify-content-end align-items-center">
-                                    <a href="{{ route('office_classes.index')}}" class="me-2 flex-grow-1 w-100">
+                                    <a href="{{ route('courses.index')}}" class="me-2 flex-grow-1 w-100">
                                         <button type="button" class="btn btn-outline-danger">Cancel</button>
                                     </a>
                                     <button type="submit" class="btn btn-primary flex-grow-1 fw-bold w-100">Submit

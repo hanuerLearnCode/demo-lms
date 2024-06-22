@@ -31,7 +31,7 @@ class OfficeClassController extends Controller
     {
         //
         $classes = OfficeClassResource::collection($this->officeClassService->getAll()
-            ->orderBy('faculty_id', 'asc')->paginate(20));
+            ->orderBy('faculty_id', 'asc')->paginate(10));
         return view('classes.index')->with([
             'classes' => $classes,
         ]);

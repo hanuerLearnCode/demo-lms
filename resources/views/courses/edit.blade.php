@@ -17,17 +17,17 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-10">
-                            <h2 class="w-full text-lg text-left px-6 py-3">Updating class</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">Updating course</h2>
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
-                        <form class="form" method="post" action="{{ route('office_classes.update', $class->id) }}">
+                        <form class="form" method="post" action="{{ route('courses.update', $course->id) }}">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control rounded-md" id="name"
-                                       name="name" value="{{ $class->name }}" required>
+                                       name="name" value="{{ $course->name }}" required>
                                 @error('name')
                                 <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
@@ -49,7 +49,7 @@
                                 <div class="col-md-10">
                                 </div>
                                 <div class="col-md-2 d-flex justify-content-end align-items-center">
-                                    <a href="{{ route('office_classes.index') }}" class="me-2 flex-grow-1 w-100">
+                                    <a href="{{ route('courses.index') }}" class="me-2 flex-grow-1 w-100">
                                         <button type="button" class="btn btn-outline-danger">Cancel</button>
                                     </a>
                                     <button type="submit" class="btn btn-primary flex-grow-1 fw-bold w-100">Submit

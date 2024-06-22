@@ -20,6 +20,7 @@ class CourseService implements RepositoryInterface
 
     public function create(array $data = [])
     {
+        return Course::create($data);
     }
 
     public function update(ModelInterface $model, array $data = [])

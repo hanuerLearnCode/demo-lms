@@ -17,6 +17,7 @@ class Course extends Model implements ModelInterface
         'abbreviation',
         'enrollment_key',
         'credit',
+        'faculty_id',
     ];
 
     public function faculty()

@@ -19,14 +19,14 @@
 
                     <div class="overflow-x-auto flex items-center row">
                         <div class="col-md-6">
-                            <h2 class="w-full text-lg text-left px-6 py-3">Classes List</h2>
+                            <h2 class="w-full text-lg text-left px-6 py-3">Courses List</h2>
                         </div>
                         <div class="col-md-4 h-75">
-                            <form class="d-flex" method="GET" action="{{ route('office_classes.search') }}">
+                            <form class="d-flex" method="GET" action="{{ route('courses.search') }}">
                                 @csrf  {{-- Include CSRF token if needed for search functionality --}}
                                 <div class="input-group">
                                     <input type="text" class="form-control rounded-md py-2 border-gray-300"
-                                           name="search" id="searchInput" placeholder="Search classes..."
+                                           name="search" id="searchInput" placeholder="Search courses..."
                                            aria-label="Search">
                                     <button class="btn btn-outline-primary rounded-md" type="submit">
                                         <i class="fas fa-search"></i>
@@ -35,9 +35,9 @@
                             </form>
                         </div>
                         <div class="col-md-2">
-                            <a class="btn btn-primary" href="{{ route('office_classes.create') }}">
+                            <a class="btn btn-primary" href="{{ route('courses.create') }}">
                                 <button>
-                                    New class
+                                    New course
                                 </button>
                             </a>
                         </div>
@@ -54,10 +54,13 @@
                                     Name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
+                                    Abrreviation
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Faculty
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Number of Students
+                                    Credit
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Created at
@@ -68,7 +71,7 @@
                             </tr>
                             </thead>
                             <tbody id="table_body" class="initial-tbody">
-                            @foreach($classes as $class)
+                            @foreach($courses as $course)
                                 @php
                                     $count++;
                                 @endphp
@@ -77,27 +80,31 @@
                                         {{ $count }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $class->name }}
+                                        {{ $course->name }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $class->faculty->name }}
+                                        {{ $course->abbreviation }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ count($class->students) }}
+                                        {{ $course->faculty->name }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $class->created_at }}
+                                        {{ $course->credit }}
                                     </td>
-                                    <td class="px-6 py-3 me-2 row">
+                                    <td class="px-6 py-3">
+                                        {{ $course->created_at }}
+                                    </td>
+                                    <td class="px-6 py-3 me-1 row">
                                         <div class="px-1 py-1 col-md-6">
                                             <a class="btn btn-outline-primary w-100"
-                                               href="{{ route('office_classes.edit', $class->id) }}">
+                                               href="{{ route('courses.edit', $course->id) }}">
                                                 Edit
                                             </a>
                                         </div>
-                                        <div class="px-1 py-1 col-md-6">
+                                        <div
+                                            class="px-1 py-1 col-md-6 d-flex align-items-center justify-content-center">
                                             <form method="POST"
-                                                  action="{{ route('office_classes.destroy', $class->id) }}"
+                                                  action="{{ route('courses.destroy', $course->id) }}"
                                                   onsubmit="return confirm('Are you sure deleting this class?')">
                                                 @csrf  {{-- Include CSRF token --}}
                                                 @method('DELETE')  {{-- Specify DELETE method --}}
@@ -112,7 +119,7 @@
                         </table>
                     </div>
                     <div id="paginate" class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
-                        {{ $classes->onEachSide(2)->links() }}
+                        {{ $courses->onEachSide(2)->links() }}
                     </div>
                 </div>
             </div>
@@ -133,9 +140,15 @@
                 let query = $(this).val();
 
                 if (query !== lastQuery) {
-
+                    if (query.length > 0) {
+                        // Hide pagination when searching
+                        $('#paginate').addClass('d-none');
+                    } else {
+                        // Show pagination when search input is empty
+                        $('#paginate').removeClass('d-none');
+                    }
                     $.ajax({
-                        url: '{{ route("office_classes.search") }}', // Create this route in your Laravel app
+                        url: '{{ route("courses.search") }}', // Create this route in your Laravel app
                         method: 'GET',
                         header: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),

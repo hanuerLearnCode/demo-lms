@@ -133,7 +133,13 @@
                 let query = $(this).val();
 
                 if (query !== lastQuery) {
-
+                    if (query.length > 0) {
+                        // Hide pagination when searching
+                        $('#paginate').addClass('d-none');
+                    } else {
+                        // Show pagination when search input is empty
+                        $('#paginate').removeClass('d-none');
+                    }
                     $.ajax({
                         url: '{{ route("office_classes.search") }}', // Create this route in your Laravel app
                         method: 'GET',
