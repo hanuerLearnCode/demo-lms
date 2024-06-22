@@ -105,7 +105,7 @@
                                             class="px-1 py-1 col-md-6 d-flex align-items-center justify-content-center">
                                             <form method="POST"
                                                   action="{{ route('courses.destroy', $course->id) }}"
-                                                  onsubmit="return confirm('Are you sure deleting this class?')">
+                                                  onsubmit="return confirm('Are you sure deleting this course?')">
                                                 @csrf  {{-- Include CSRF token --}}
                                                 @method('DELETE')  {{-- Specify DELETE method --}}
                                                 <button type="submit" class="btn btn-outline-danger w-100">Delete

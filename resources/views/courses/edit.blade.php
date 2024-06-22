@@ -29,7 +29,31 @@
                                 <input type="text" class="form-control rounded-md" id="name"
                                        name="name" value="{{ $course->name }}" required>
                                 @error('name')
-                                <div class="text-danger mt-2">{{ $message }}</div>
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="abbreviation" class="form-label">Abbreviation</label>
+                                <input type="text" class="form-control rounded-md" id="abbreviation"
+                                       name="abbreviation" value="{{ $course->abbreviation }}" required>
+                                @error('abbreviation')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="enrollment_key" class="form-label">Enrollment Key</label>
+                                <input type="text" class="form-control rounded-md" id="enrollment_key"
+                                       name="enrollment_key" value="{{ $course->enrollment_key }}" required>
+                                @error('enrollment_key')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="credit" class="form-label">Credit</label>
+                                <input type="text" class="form-control rounded-md" id="credit"
+                                       name="credit" value="{{ $course->credit }}" required>
+                                @error('credit')
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">

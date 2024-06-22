@@ -25,9 +25,11 @@ class CourseService implements RepositoryInterface
 
     public function update(ModelInterface $model, array $data = [])
     {
+        return $model->update($data);
     }
 
     public function delete(ModelInterface $model)
     {
+        return $model->delete();
     }
 }

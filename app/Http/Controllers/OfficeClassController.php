@@ -146,7 +146,7 @@ class OfficeClassController extends Controller
         } catch (\Exception $exception) {
             logger($exception->getMessage());
             return redirect()->back()->with([
-                'error' => 'Couldn\'t update this faculty, please try again!',
+                'error' => 'Couldn\'t update this class, please try again!',
             ]);
         }
     }
