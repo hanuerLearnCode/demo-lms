@@ -31,7 +31,7 @@ class OfficeClassController extends Controller
     {
         //
         $classes = OfficeClassResource::collection($this->officeClassService->getAll()
-            ->orderBy('faculty_id', 'asc')->paginate(10));
+            ->orderBy('faculty_id', 'asc')->paginate(20));
         return view('classes.index')->with([
             'classes' => $classes,
         ]);
@@ -186,7 +186,7 @@ class OfficeClassController extends Controller
                     $q->where('office_classes.name', 'like', "%$query%")
                         ->orWhere('faculties.name', 'like', "%$query%");
                 })
-                ->select('office_classes.*')
+                ->select('office_classes.*', 'faculties.name as faculty_name')
                 ->paginate(10); // optimize search with paginate
         });
 
