@@ -17,4 +17,7 @@ Route::middleware([
     // add server-side rate limiting -> optimize search
     Route::get('/office_classes/search', [\App\Http\Controllers\OfficeClassController::class, 'search'])->name('office_classes.search');
 
+    // add server-side rate limiting -> optimize search
+    Route::get('/courses/search', [\App\Http\Controllers\CourseController::class, 'search'])->name('courses.search');
+
 });

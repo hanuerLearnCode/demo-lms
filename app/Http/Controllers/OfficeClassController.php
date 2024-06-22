@@ -31,7 +31,7 @@ class OfficeClassController extends Controller
     {
         //
         $classes = OfficeClassResource::collection($this->officeClassService->getAll()
-            ->orderBy('faculty_id', 'asc')->paginate(20));
+            ->orderBy('faculty_id', 'asc')->paginate(10));
         return view('classes.index')->with([
             'classes' => $classes,
         ]);
@@ -146,7 +146,7 @@ class OfficeClassController extends Controller
         } catch (\Exception $exception) {
             logger($exception->getMessage());
             return redirect()->back()->with([
-                'error' => 'Couldn\'t update this faculty, please try again!',
+                'error' => 'Couldn\'t update this class, please try again!',
             ]);
         }
     }

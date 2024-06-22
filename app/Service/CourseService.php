@@ -10,7 +10,7 @@ class CourseService implements RepositoryInterface
 {
     public function getAll()
     {
-        return Course::with('faculty')->with('students')->with('courseStudent')->get();
+        return Course::with('faculty')->with('students')->with('courseStudent');
     }
 
     public function getById(int $id)
@@ -20,13 +20,16 @@ class CourseService implements RepositoryInterface
 
     public function create(array $data = [])
     {
+        return Course::create($data);
     }
 
     public function update(ModelInterface $model, array $data = [])
     {
+        return $model->update($data);
     }
 
     public function delete(ModelInterface $model)
     {
+        return $model->delete();
     }
 }
