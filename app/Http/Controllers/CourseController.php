@@ -21,7 +21,10 @@ class CourseController extends Controller
     public function index()
     {
         //
-        return CourseResource::collection($this->courseService->getAll());
+        $courses = CourseResource::collection($this->courseService->getAll());
+        return view('courses.index')->with([
+            'courses' => $courses,
+        ]);
     }
 
     /**

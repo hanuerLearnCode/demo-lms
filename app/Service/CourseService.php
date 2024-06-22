@@ -10,7 +10,7 @@ class CourseService implements RepositoryInterface
 {
     public function getAll()
     {
-        return Course::with('faculty')->with('students')->with('courseStudent')->get();
+        return Course::with('faculty')->with('students')->with('courseStudent');
     }
 
     public function getById(int $id)
