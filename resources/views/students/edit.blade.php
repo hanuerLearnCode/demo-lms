@@ -21,12 +21,13 @@
                         </div>
                     </div>
                     <div class="overflow-x-auto px-4 pt-1 pb-4">
-                        <form class="form" method="post" action="{{ route('students.store') }}">
+                        <form class="form" method="post" action="{{ route('students.update', $student->id) }}">
                             @csrf
+                            @method('PUT')
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control rounded-md" id="name"
-                                       name="name" value="{{ old('name') }}" required>
+                                       name="name" value="{{ $student->user->name }}" required>
                                 @error('name')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -34,7 +35,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
                                 <input type="email" class="form-control rounded-md" id="email" name="email"
-                                       aria-describedby="emailHelp" value="{{ old('email') }}" required>
+                                       aria-describedby="emailHelp" value="{{ $student->user->email }}" required>
                                 @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -42,7 +43,7 @@
                             <div class="mb-3">
                                 <label for="faculty_id" class="form-label">Faculty</label>
                                 <select id="faculty_id" name="faculty_id" class="form-select rounded-md"
-                                        aria-label="Default select example" required>
+                                        aria-label="Default select example">
                                     <option selected value="">Select faculty</option>
                                     @foreach($faculties as $faculty)
                                         <option value="{{ $faculty->id }}"> {{ $faculty->name }} </option>
@@ -55,7 +56,7 @@
                             <div class="mb-3">
                                 <label for="office_classs_id" class="form-label">Class</label>
                                 <select id="office_class_id" name="office_class_id" class="form-select rounded-md"
-                                        aria-label="Default select example" required>
+                                        aria-label="Default select example">
                                     <option selected value="">Select class</option>
                                 </select>
                                 @error('office_classs_id')
@@ -65,7 +66,7 @@
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control rounded-md" id="password" name="password"
-                                       required>
+                                >
                                 @error('password')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -74,7 +75,7 @@
                             <div class="mb-3">
                                 <label for="password_confirmation" class="form-label">Confirm password</label>
                                 <input type="password" class="form-control rounded-md" id="password_confirmation"
-                                       name="password_confirmation" required>
+                                       name="password_confirmation">
                                 @error('password_confirmation')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror

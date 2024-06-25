@@ -186,4 +186,11 @@ class FacultyController extends Controller
         }
         return $html;
     }
+
+    public function getClasses(int $id)
+    {
+        $faculty = $this->facultyService->getById($id);
+        $classes = $faculty->officeClasses;
+        return response()->json($classes);
+    }
 }
