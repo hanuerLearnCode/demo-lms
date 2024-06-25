@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\StudentResource;
+use App\Models\Course;
 use App\Models\OfficeClass;
 use App\Models\Role;
 use App\Models\User;
@@ -13,6 +14,7 @@ use App\Service\User\StudentService;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -45,12 +47,12 @@ class StudentController extends Controller
 
     public function show(int $id)
     {
-        $student = $this->studentService->getById($id);
-
-        if ($student)
-            return new StudentResource($student);
-
-        return response()->json("Couldn't find the target student!", 404);
+//        $student = $this->studentService->getById($id);
+//
+//        if ($student)
+//            return new StudentResource($student);
+//
+//        return response()->json("Couldn't find the target student!", 404);
     }
 
     public function create()
@@ -195,5 +197,36 @@ class StudentController extends Controller
             ]);
         }
 
+    }
+
+    public function search(Request $request)
+    {
+        dd($request);
+        $query = $request->input('query');
+
+        // using laravel caching system to optimize search
+        $students = Cache::remember('students_search' . $query, 3600, function () use ($query) {
+            return Student::join('faculties', 'students.faculty_id', '=', 'faculties.id')
+                ->join('office_classes', 'students.office_class_id', '=', 'office_classes.id')
+                ->where(function ($q) use ($query) {
+                    $q->where('students.name', 'like', "%$query%")
+                        ->orWhere('office_classes.name', 'like', "%$query%")
+                        ->orWhere('faculties.name', 'like', "%$query%")
+                        ->orWhere('faculties.abbreviation', 'like', "%$query%");
+                })
+                ->select('students.*', 'faculties.name as faculty_name')
+                ->paginate(10); // optimize search with paginate
+        });
+
+        $count = 0;
+        $html = '';
+
+        if (count($students) <= 0) return '<tr><td colspan="5" class="px-6 py-4 text-center">No results for your search</td></tr>';
+
+        foreach ($students as $student) {
+            $count++;
+            $html .= view('partials.student-row', compact('student', 'count'))->render();
+        }
+        return $html;
     }
 }

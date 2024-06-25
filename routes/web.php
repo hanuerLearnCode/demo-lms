@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-require_once __DIR__ . '/search.php';
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -47,3 +45,5 @@ Route::middleware([
 
     Route::resource('courses', \App\Http\Controllers\CourseController::class);
 });
+
+require_once __DIR__ . '/search.php';

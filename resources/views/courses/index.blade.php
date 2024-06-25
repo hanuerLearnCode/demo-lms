@@ -148,7 +148,7 @@
                         $('#paginate').removeClass('d-none');
                     }
                     $.ajax({
-                        url: '{{ route("courses.search") }}', // Create this route in your Laravel app
+                        url: '{{ route("courses.search") }}',
                         method: 'GET',
                         header: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
