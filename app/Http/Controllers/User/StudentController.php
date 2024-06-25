@@ -14,6 +14,7 @@ use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -97,7 +98,7 @@ class StudentController extends Controller
         } catch (\Exception $exception) {
             logger($exception->getMessage());
             return redirect()->back()->with([
-                'success' => 'Couldn\'t create new student!',
+                'error' => 'Couldn\'t create new student!',
             ]);
         }
     }
@@ -115,22 +116,31 @@ class StudentController extends Controller
     public function update(Request $request, int $id)
     {
         $data = $request->all();
+        unset($data['_token']);
+
 
         try {
 
             $student = $this->studentService->getById($id);
-            if (!$student) return response()->json('Can\'t find the target student!', 404);
-
+            if (!$student) return redirect()->back()->withErrors($student)->withInput();
             $user = $this->userService->getById($student->user->id);
-            if (!$user) return response()->json("Couldn't find the target user!");
+            if (!$user) return redirect()->back()->withErrors($user)->withInput();
 
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                $data['password'] = $user->password;
+            }
             // update user infor
             $update = $this->userService->update($user, $data);
 
             // if new infor is not valid
             if ($update !== true) {
-                return $update;
+                return redirect()->back()->withErrors($update)->withInput();
             }
+
+            if (!isset($data['office_class_id'])) $data['office_class_id'] = $student->officeClass->id;
+            if (!isset($data['faculty_id'])) $data['faculty_id'] = $student->faculty->id;
 
             // update student infor
             $updateStudentData = [
@@ -138,18 +148,22 @@ class StudentController extends Controller
                 'faculty_id' => $data['faculty_id'],
             ];
 
-            $updateStudentData = $request->validate($updateStudentData, [
-                'faculty_id' => '',
-                'office_class_id' => ''
-            ]);
+//            $updateStudentData = $request->validate($updateStudentData, [
+//                'faculty_id' => '',
+//                'office_class_id' => ''
+//            ]);
 
             $this->studentService->update($student, $updateStudentData);
 
-            return response()->json('Student updated!');
+            return redirect('/students')->with([
+                'success' => 'Student updated!',
+            ]);
 
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json('Something went wrong, couldn\'t update student!');
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t create new student!',
+            ]);
         }
     }
 
@@ -171,10 +185,14 @@ class StudentController extends Controller
             // delete from users table
             $this->userService->delete($user);
 
-            return response()->json("Student deleted!");
+            return redirect('/students')->with([
+                'success' => 'Student deleted!',
+            ]);
         } catch (\Exception $exception) {
             logger($exception->getMessage());
-            return response()->json('Something went wrong, couldn\'t delete student!');
+            return redirect()->back()->with([
+                'error' => 'Couldn\'t delete this student!',
+            ]);
         }
 
     }

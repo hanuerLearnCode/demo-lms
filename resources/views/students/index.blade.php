@@ -89,10 +89,14 @@
                                             </a>
                                         </div>
                                         <div class="px-1 py-1 col-md-6">
-                                            <a class="btn btn-outline-danger w-100"
-                                               href="{{ route('students.destroy', $student->id) }}">
-                                                Delete
-                                            </a>
+                                            <form method="POST"
+                                                  action="{{ route('students.destroy', $student->id) }}"
+                                                  onsubmit="return confirm('Are you sure deleting this student?')">
+                                                @csrf  {{-- Include CSRF token --}}
+                                                @method('DELETE')  {{-- Specify DELETE method --}}
+                                                <button type="submit" class="btn btn-outline-danger w-100">Delete
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
