@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\StudentController;
 
 
 Route::middleware([
@@ -19,5 +20,8 @@ Route::middleware([
 
     // add server-side rate limiting -> optimize search
     Route::get('/courses/search', [\App\Http\Controllers\CourseController::class, 'search'])->name('courses.search');
+
+    // add server-side rate limiting -> optimize search
+    Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
 
 });

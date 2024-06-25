@@ -18,8 +18,21 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
                     <div class="overflow-x-auto flex items-center row">
-                        <div class="col-md-10">
+                        <div class="col-md-6">
                             <h2 class="w-full text-lg text-left px-6 py-3">Students List</h2>
+                        </div>
+                        <div class="col-md-4 h-75">
+                            <form class="d-flex" method="GET" action="{{ route('students.search') }}">
+                                @csrf  {{-- Include CSRF token if needed for search functionality --}}
+                                <div class="input-group">
+                                    <input type="text" class="form-control rounded-md py-2 border-gray-300"
+                                           name="search" id="searchInput" placeholder="Search students..."
+                                           aria-label="Search">
+                                    <button class="btn btn-outline-primary rounded-md" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         <div class="col-md-2 add-user">
                             <a class="btn btn-primary" href="{{ route('students.create') }}">
@@ -111,4 +124,47 @@
             </div>
         </div>
     </main>
+
+    <script type="module">
+
+        /**
+         * Live search box
+         */
+        $(document).ready(function () {
+
+            // query caching
+            let lastQuery = '';
+
+            $('#searchInput').on('input', function () {
+                let query = $(this).val();
+
+                if (query !== lastQuery) {
+                    if (query.length > 0) {
+                        // Hide pagination when searching
+                        $('#paginate').addClass('d-none');
+                    } else {
+                        // Show pagination when search input is empty
+                        $('#paginate').removeClass('d-none');
+                    }
+                    $.ajax({
+                        url: '{{ route("students.search") }}',
+                        method: 'GET',
+                        header: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        data: {query: query},
+                        success: function (response) {
+                            $('#table_body').html(response);
+                        },
+                        error: function (xhr) {
+                            console.log('Error:', xhr);
+                        }
+                    });
+
+                    lastQuery = query;
+                }
+            });
+        });
+
+    </script>
 @endsection
