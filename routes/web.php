@@ -27,6 +27,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
+require_once __DIR__ . '/search.php';
 
 Route::middleware([
     'auth:sanctum',
@@ -46,4 +47,3 @@ Route::middleware([
     Route::resource('courses', \App\Http\Controllers\CourseController::class);
 });
 
-require_once __DIR__ . '/search.php';

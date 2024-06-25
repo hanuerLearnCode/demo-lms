@@ -70,7 +70,7 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table_body" class="initial-tbody">
                             @foreach($students as $student)
                                 @php
                                     $count++;

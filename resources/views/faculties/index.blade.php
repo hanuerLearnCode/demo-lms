@@ -74,7 +74,9 @@
                                         {{ $count }}
                                     </td>
                                     <td class="px-6 py-3">
-                                        {{ $faculty->name }}
+                                        <a href="{{ route('faculties.show', $faculty->id) }}">
+                                            {{ $faculty->name }}
+                                        </a>
                                     </td>
                                     <td class="px-6 py-3">
                                         {{ $faculty->abbreviation }}

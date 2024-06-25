@@ -40,7 +40,9 @@ class FacultyController extends Controller
         $faculty = $this->facultyService->getById($id);
 
         if (!$faculty) return response()->json('Couldn\'t find the target faculty!');
-        return new FacultyResource($faculty);
+        return view('faculties.profile')->with([
+            'faculty' => new FacultyResource($faculty),
+        ]);
     }
 
     /**

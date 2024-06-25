@@ -7,6 +7,7 @@ use App\Http\Resources\User\StudentResource;
 use App\Models\Course;
 use App\Models\OfficeClass;
 use App\Models\Role;
+use App\Models\Student;
 use App\Models\User;
 use App\Service\FacultyService;
 use App\Service\OfficeClassService;
@@ -201,15 +202,15 @@ class StudentController extends Controller
 
     public function search(Request $request)
     {
-        dd($request);
         $query = $request->input('query');
 
         // using laravel caching system to optimize search
         $students = Cache::remember('students_search' . $query, 3600, function () use ($query) {
-            return Student::join('faculties', 'students.faculty_id', '=', 'faculties.id')
+            return Student::join('users', 'students.user_id', '=', 'users.id')
+                ->join('faculties', 'students.faculty_id', '=', 'faculties.id')
                 ->join('office_classes', 'students.office_class_id', '=', 'office_classes.id')
                 ->where(function ($q) use ($query) {
-                    $q->where('students.name', 'like', "%$query%")
+                    $q->where('users.name', 'like', "%$query%")
                         ->orWhere('office_classes.name', 'like', "%$query%")
                         ->orWhere('faculties.name', 'like', "%$query%")
                         ->orWhere('faculties.abbreviation', 'like', "%$query%");
