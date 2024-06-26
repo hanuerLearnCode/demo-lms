@@ -129,6 +129,13 @@
                 let query = $(this).val();
 
                 if (query !== lastQuery) {
+                    if (query.length > 0) {
+                        // Hide pagination when searching
+                        $('#paginate').addClass('d-none');
+                    } else {
+                        // Show pagination when search input is empty
+                        $('#paginate').removeClass('d-none');
+                    }
                     $.ajax({
                         url: '{{ route("faculties.search") }}', // Create this route in your Laravel app
                         method: 'GET',
@@ -138,7 +145,6 @@
                         data: {query: query},
                         success: function (response) {
                             $('#table_body').html(response);
-                            $('#paginate').addClass('d-none');
                         },
                         error: function (xhr) {
                             console.log('Error:', xhr);
@@ -149,35 +155,6 @@
                 }
             });
         });
-
-        /**
-         * Perform searching when the form is submitted
-         */
-        // $(document).ready(function () {
-        //     $(".form").submit(function (event) {
-        //         event.preventDefault();
-        //
-        //         let searchTerm = document.getElementById('search').value;
-        //
-        //         $.ajax({
-        //             url: "",
-        //             method: "GET",
-        //             header: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-        //             },
-        //             data: {input: searchTerm, date: date},
-        //             dataType: "json",
-        //             success: function (data) {
-        //                 $('.search-result').removeClass('d-none');
-        //                 $(".search-result").html(data.data);
-        //             },
-        //             error: function (error) {
-        //                 console.error(error);
-        //                 // Handle errors here
-        //             }
-        //         });
-        //     });
-        // });
 
     </script>
 

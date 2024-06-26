@@ -174,7 +174,7 @@ class FacultyController extends Controller
         $faculties = Cache::remember('faculties_search_' . $query, 3600, function () use ($query) {
             return Faculty::where('name', 'like', "%$query%")
                 ->orWhere('abbreviation', 'like', "%$query%")
-                ->paginate(10); // optimize search with paginate
+                ->paginate(20); // optimize search with paginate
         });
 
         $count = 0;

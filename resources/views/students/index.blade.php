@@ -117,7 +117,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
+                    <div id="paginate" class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
                         {{ $students->onEachSide(2)->links() }}
                     </div>
                 </div>

@@ -193,7 +193,7 @@ class OfficeClassController extends Controller
         $count = 0;
         $html = '';
 
-        if (count($classes) <= 0) return '<tr><td colspan="5" class="px-6 py-4 text-center">No results for your search</td></tr>';
+        if (count($classes) <= 0) return '<tr><td colspan="6" class="px-6 py-4 text-center">No results for your search</td></tr>';
 
         foreach ($classes as $class) {
             $count++;

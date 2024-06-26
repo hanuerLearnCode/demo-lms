@@ -187,7 +187,7 @@ class CourseController extends Controller
         $count = 0;
         $html = '';
 
-        if (count($courses) <= 0) return '<tr><td colspan="5" class="px-6 py-4 text-center">No results for your search</td></tr>';
+        if (count($courses) <= 0) return '<tr><td colspan="7" class="px-6 py-4 text-center">No results for your search</td></tr>';
 
         foreach ($courses as $course) {
             $count++;
