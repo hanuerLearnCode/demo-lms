@@ -13,6 +13,7 @@ class Teacher extends Model implements UserInterface
     protected $table = 'teachers';
 
     protected $fillable = [
+        'position',
         'user_id',
         'faculty_id',
         'salary',

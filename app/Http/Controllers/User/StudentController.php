@@ -48,12 +48,12 @@ class StudentController extends Controller
 
     public function show(int $id)
     {
-//        $student = $this->studentService->getById($id);
-//
-//        if ($student)
-//            return new StudentResource($student);
-//
-//        return response()->json("Couldn't find the target student!", 404);
+        $student = $this->studentService->getById($id);
+
+        if ($student)
+            return new StudentResource($student);
+
+        return response()->json("Couldn't find the target student!", 404);
     }
 
     public function create()

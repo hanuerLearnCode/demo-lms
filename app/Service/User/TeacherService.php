@@ -10,7 +10,7 @@ class TeacherService implements UserRepositoryInterface
 {
     public function getAll()
     {
-        return Teacher::with('user')->with('faculty')->get();
+        return Teacher::with('user')->with('faculty');
     }
 
     public function getById(int $id)
