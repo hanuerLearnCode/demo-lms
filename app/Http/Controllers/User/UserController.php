@@ -4,10 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\UserResource;
+use App\Models\Student;
 use App\Models\User;
 use App\Service\User\UserRoleService;
 use App\Service\User\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -129,5 +131,33 @@ class UserController extends Controller
             logger($exception->getMessage());
             return response()->json("Something went wrong, couldn't delete user!");
         }
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // using laravel caching system to optimize search
+        $users = Cache::remember('users_search' . $query, 3600, function () use ($query) {
+            return User::join('users_roles', 'users.id', '=', 'users_roles.user_id')
+                ->join('roles', 'users_roles.role_id', '=', 'roles.id')
+                ->where(function ($q) use ($query) {
+                    $q->where('users.name', 'like', "%$query%")
+                        ->orWhere('roles.title', 'like', "%$query");
+                })
+                ->select('users.*')
+                ->paginate(10); // optimize search with paginate
+        });
+
+        $count = 0;
+        $html = '';
+
+        if (count($users) <= 0) return '<tr><td colspan="7" class="px-6 py-4 text-center">No results for your search</td></tr>';
+
+        foreach ($users as $user) {
+            $count++;
+            $html .= view('partials.user_row', compact('user', 'count'))->render();
+        }
+        return $html;
     }
 }

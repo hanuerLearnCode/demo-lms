@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\StudentController;
 use App\Http\Controllers\User\TeacherController;
+use App\Http\Controllers\User\UserController;
 
 
 Route::middleware([
@@ -12,6 +13,8 @@ Route::middleware([
     'verified',
     'throttle:60,1',
 ])->group(function () {
+    // add server-side rate limiting -> optimize search
+    Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 
     // add server-side rate limiting -> optimize search
     Route::get('/faculties/search', [\App\Http\Controllers\FacultyController::class, 'search'])->name('faculties.search');

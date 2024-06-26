@@ -18,14 +18,27 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
                     <div class="overflow-x-auto flex items-center row">
-                        <div class="col-md-10">
+                        <div class="col-md-8">
                             <h2 class="w-full text-lg text-left px-6 py-3">Users List</h2>
+                        </div>
+                        <div class="col-md-4 h-75">
+                            <form class="d-flex" method="GET" action="{{ route('users.search') }}">
+                                @csrf  {{-- Include CSRF token if needed for search functionality --}}
+                                <div class="input-group">
+                                    <input type="text" class="form-control rounded-md py-2 border-gray-300"
+                                           name="search" id="searchInput" placeholder="Search users..."
+                                           aria-label="Search">
+                                    <button class="btn btn-outline-primary rounded-md" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-md text-left text-gray-500 dark:text-gray-400">
                             <thead
-                                    class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     #
@@ -44,7 +57,7 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table_body" class="initial-tbody">
                             @foreach($users as $user)
                                 @php
                                     $count++;
@@ -70,11 +83,54 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
+                    <div id="paginate" class="paginate m-3 px-4 d-flex align-items-center justify-content-center">
                         {{ $users->onEachSide(2)->links() }}
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <script type="module">
+
+        /**
+         * Live search box
+         */
+        $(document).ready(function () {
+
+            // query caching
+            let lastQuery = '';
+
+            $('#searchInput').on('input', function () {
+                let query = $(this).val();
+
+                if (query !== lastQuery) {
+                    if (query.length > 0) {
+                        // Hide pagination when searching
+                        $('#paginate').addClass('d-none');
+                    } else {
+                        // Show pagination when search input is empty
+                        $('#paginate').removeClass('d-none');
+                    }
+                    $.ajax({
+                        url: '{{ route("users.search") }}',
+                        method: 'GET',
+                        header: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        data: {query: query},
+                        success: function (response) {
+                            $('#table_body').html(response);
+                        },
+                        error: function (xhr) {
+                            console.log('Error:', xhr);
+                        }
+                    });
+
+                    lastQuery = query;
+                }
+            });
+        });
+
+    </script>
 @endsection
