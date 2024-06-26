@@ -143,7 +143,7 @@ class UserController extends Controller
                 ->join('roles', 'users_roles.role_id', '=', 'roles.id')
                 ->where(function ($q) use ($query) {
                     $q->where('users.name', 'like', "%$query%")
-                        ->orWhere('roles.title', 'like', "%$query");
+                        ->orWhere('roles.title', 'like', "%$query%");
                 })
                 ->select('users.*')
                 ->paginate(10); // optimize search with paginate
